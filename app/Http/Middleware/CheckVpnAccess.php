@@ -12,7 +12,7 @@ class CheckVpnAccess
     {
         // Get real IP using MAMP with Apache
         $clientIp = $this->getRealIp($request);
-        $allowedIps = ['10.8.0.0/24']; // Your VPN IP range
+        $allowedIps = ['2.80.250.76', '188.83.23.108']; // Your VPN IP range and specific IP
 
         // Log the actual IP and headers for debugging
         Log::channel('vpn')->info("VPN access check initiated", [
