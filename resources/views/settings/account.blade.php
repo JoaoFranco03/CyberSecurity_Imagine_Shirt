@@ -1,4 +1,4 @@
-@extends('../Template.settings_navbar')
+@extends('../template.settings_navbar')
 @section('content_settings')
 
     <form class="divide-y divide-gray-200 dark:divide-gray-600 lg:col-span-9"

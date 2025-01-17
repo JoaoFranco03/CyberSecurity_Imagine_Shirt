@@ -1,4 +1,4 @@
-@extends('../Template.settings_navbar')
+@extends('../template.settings_navbar')
 @section('content_settings')
     @php
         $user = auth()->user();

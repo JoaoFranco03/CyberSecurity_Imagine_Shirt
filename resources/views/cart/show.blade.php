@@ -1,4 +1,4 @@
-@extends('../Template.store_navbar')
+@extends('../template.store_navbar')
 @section('content')
     <main class="mx-auto max-w-7xl px-4 mt-5">
         <div class="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">

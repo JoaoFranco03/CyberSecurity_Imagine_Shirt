@@ -1,4 +1,4 @@
-@extends('../Template.store_navbar')
+@extends('../template.store_navbar')
 @section('content')
 
     <div class="bg-gray-50 dark:bg-gray-900">

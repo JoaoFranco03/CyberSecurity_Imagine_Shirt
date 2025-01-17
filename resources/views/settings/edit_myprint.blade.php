@@ -1,4 +1,4 @@
-@extends('../Template.settings_navbar')
+@extends('../template.settings_navbar')
 @section('content_settings')
     <main class="col-span-9 px-6 pb-8">
         <!-- Product -->

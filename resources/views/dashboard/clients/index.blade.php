@@ -1,4 +1,4 @@
-@extends('../Template.dashboard_navbar')
+@extends('../template.dashboard_navbar')
 
 @section('content')
     <div id="user-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"

@@ -1,4 +1,4 @@
-@extends('../Template.dashboard_navbar')
+@extends('../template.dashboard_navbar')
 
 @section('content')
 @include('layouts.partials.messages')
