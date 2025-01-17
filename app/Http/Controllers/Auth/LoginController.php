@@ -51,7 +51,7 @@ class LoginController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if ($user == null) {
-            Log::channel('vpn')->info('Failed login attempt - User does not exist', [
+            Log::channel('login')->info('Failed login attempt - User does not exist', [
                 'email' => $credentials['email'],
                 'ip' => $request->ip()
             ]);
@@ -60,7 +60,7 @@ class LoginController extends Controller
 
         // Check if the user exists and is not blocked
         if ($user->blocked != 0) {
-            Log::channel('vpn')->warning('Blocked user attempted to login', [
+            Log::channel('login')->warning('Blocked user attempted to login', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'ip' => $request->ip()
@@ -69,7 +69,7 @@ class LoginController extends Controller
         }
 
         if (Auth::attempt($credentials)) {
-            Log::channel('vpn')->info('Successful login', [
+            Log::channel('login')->info('Successful login', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'user_type' => $user->user_type,
@@ -87,7 +87,7 @@ class LoginController extends Controller
             }
             return $user->user_type == 'A' ? redirect()->route("dashboard.index") : redirect()->route('home');
         } else {
-            Log::channel('vpn')->warning('Failed login attempt - Invalid credentials', [
+            Log::channel('login')->warning('Failed login attempt - Invalid credentials', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'ip' => $request->ip()

@@ -134,6 +134,14 @@ return [
             'days' => 14,
             'permission' => 0777
         ],
+
+        'login' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/login.log'),
+            'level' => 'debug',
+            'days' => 14,
+            'permission' => 0777
+        ],
     ],
 
 ];
