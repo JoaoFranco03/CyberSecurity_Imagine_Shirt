@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class LoginController extends Controller
 {
@@ -46,15 +47,29 @@ class LoginController extends Controller
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->only('email', 'password');
+        $email = $credentials['email'];
+        $ip = $request->ip();
+        $cacheKey = 'login_attempts_' . $email . '_' . $ip;
+        $attempts = Cache::get($cacheKey, 0);
+
+        if ($attempts >= 5) {
+            Log::channel('login')->warning('Too many login attempts', [
+                'email' => $email,
+                'ip' => $ip
+            ]);
+            return redirect()->back()->withErrors(['error' => 'Too many login attempts. Please try again later.']);
+        }
 
         // Retrieve the user record
-        $user = User::where('email', $credentials['email'])->first();
+        $user = User::where('email', $email)->first();
 
         if ($user == null) {
             Log::channel('login')->info('Failed login attempt - User does not exist', [
-                'email' => $credentials['email'],
-                'ip' => $request->ip()
+                'email' => $email,
+                'ip' => $ip
             ]);
+            Cache::increment($cacheKey);
+            Cache::put($cacheKey, $attempts + 1, now()->addMinutes(15));
             return redirect()->back()->withErrors(['error' => 'User Does Not Exist.']);
         }
 
@@ -63,7 +78,7 @@ class LoginController extends Controller
             Log::channel('login')->warning('Blocked user attempted to login', [
                 'user_id' => $user->id,
                 'email' => $user->email,
-                'ip' => $request->ip()
+                'ip' => $ip
             ]);
             return redirect()->back()->withErrors(['error' => 'User Blocked. Please contact the administrator']);
         }
@@ -73,9 +88,9 @@ class LoginController extends Controller
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'user_type' => $user->user_type,
-                'ip' => $request->ip()
+                'ip' => $ip
             ]);
-            
+            Cache::forget($cacheKey);
             // Authentication passed
             //dd($user->user_type == 'A' ? "dashboard" : "home");
             if ($user->user_type == 'E') {
@@ -90,8 +105,10 @@ class LoginController extends Controller
             Log::channel('login')->warning('Failed login attempt - Invalid credentials', [
                 'user_id' => $user->id,
                 'email' => $user->email,
-                'ip' => $request->ip()
+                'ip' => $ip
             ]);
+            Cache::increment($cacheKey);
+            Cache::put($cacheKey, $attempts + 1, now()->addMinutes(15));
             // Authentication failed
             return redirect()->back()->withErrors(['error' => 'Invalid credentials.']);
         }
