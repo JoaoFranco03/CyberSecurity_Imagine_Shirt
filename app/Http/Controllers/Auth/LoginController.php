@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -50,15 +51,31 @@ class LoginController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if ($user == null) {
+            Log::channel('vpn')->info('Failed login attempt - User does not exist', [
+                'email' => $credentials['email'],
+                'ip' => $request->ip()
+            ]);
             return redirect()->back()->withErrors(['error' => 'User Does Not Exist.']);
         }
 
         // Check if the user exists and is not blocked
         if ($user->blocked != 0) {
+            Log::channel('vpn')->warning('Blocked user attempted to login', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'ip' => $request->ip()
+            ]);
             return redirect()->back()->withErrors(['error' => 'User Blocked. Please contact the administrator']);
         }
 
         if (Auth::attempt($credentials)) {
+            Log::channel('vpn')->info('Successful login', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'user_type' => $user->user_type,
+                'ip' => $request->ip()
+            ]);
+            
             // Authentication passed
             //dd($user->user_type == 'A' ? "dashboard" : "home");
             if ($user->user_type == 'E') {
@@ -70,6 +87,11 @@ class LoginController extends Controller
             }
             return $user->user_type == 'A' ? redirect()->route("dashboard.index") : redirect()->route('home');
         } else {
+            Log::channel('vpn')->warning('Failed login attempt - Invalid credentials', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'ip' => $request->ip()
+            ]);
             // Authentication failed
             return redirect()->back()->withErrors(['error' => 'Invalid credentials.']);
         }
