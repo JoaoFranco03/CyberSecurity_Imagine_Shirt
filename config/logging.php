@@ -126,6 +126,14 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'vpn' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/vpn.log'),
+            'level' => 'debug',
+            'days' => 14,
+            'permission' => 0777
+        ],
     ],
 
 ];

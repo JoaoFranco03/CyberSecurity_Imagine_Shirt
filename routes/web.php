@@ -66,7 +66,8 @@ Route::middleware(['auth', 'verified', 'isBlocked'])->group(function () {
         Route::get('pdf', [PDFController::class, 'generatePDF'])->name('pdf.generate');
     });
 
-    Route::middleware('isAdmin')->group(function () {
+    // Add vpn middleware to all dashboard routes
+    Route::middleware(['isAdmin', 'vpn'])->group(function () {
         Route::resource('dashboard/categories', CategoryController::class);
         Route::get('dashboard/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
         Route::put('dashboard/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
@@ -90,7 +91,6 @@ Route::middleware(['auth', 'verified', 'isBlocked'])->group(function () {
     });
 
 });
-
 
 Route::put('cart/{id}', [CartController::class, 'update'])->name('cart.update');
 Route::post('cart/{t_shirt}', [CartController::class, 'addToCart'])->name('cart.add');
