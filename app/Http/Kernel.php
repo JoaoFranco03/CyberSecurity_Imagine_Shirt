@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'isAdmin' => \App\Http\Middleware\IsAdmin::class,
         'isClient' => \App\Http\Middleware\IsClient::class,
         'isBlocked' => \App\Http\Middleware\IsBlocked::class,
+        'vpn' => \App\Http\Middleware\CheckVpnAccess::class,
     ];
 }
