@@ -1,33 +1,26 @@
 <?php
 return [
-    'Password123!',
-    'Welcome123!',
-    'Admin123!',
-    'Qwerty123!',
-    'Password1234#',
-    'Letmein123!',
-    'Liverpool1!',
-    'Baseball1!',
-    'Football123!',
-    'Dragon123!',
-    'America123!',
-    'Superman1!',
-    'Computer1!',
-    'Internet1!',
-    'Security1!',
-    'Password1@',
-    'Master123!',
-    'Testing123!',
-    'Login123!',
-    'Access123!',
-    'Account1!',
-    'Summer2023!',
-    'Winter2023!',
-    'Spring2023!',
-    'Autumn2023!',
-    'January1!',
-    'December1!',
-    'Monday123!',
-    'Friday123!',
-    'Secret123!'
+    // Common base patterns
+    'Password123!', 'Password123@', 'Password123#', 'Password123$',
+    'Welcome123!', 'Welcome123@', 'Welcome123#',
+    'Admin123!', 'Admin123@', 'Admin123#',
+    'Qwerty123!', 'Qwerty123@', 'Qwerty123#',
+    
+    // Common word patterns
+    'Password', 'Welcome', 'Admin', 'Qwerty', 'Secret', 'Login',
+    
+    // Years and seasons
+    'Spring2023!', 'Summer2023!', 'Fall2023!', 'Winter2023!',
+    'Spring2024!', 'Summer2024!', 'Fall2024!', 'Winter2024!',
+    
+    // Common substitutions
+    'P@ssword123!', 'P@ssw0rd123!', 'P@55word123!',
+    'Welc0me123!', 'Adm1n123!', 'L0g1n123!',
+    
+    // Common keyboard patterns
+    'Qwerty123!', 'Asdfgh123!', 'Zxcvbn123!',
+    
+    // Generic patterns
+    'Test123!', 'User123!', 'Admin123!', 'Root123!',
+    'Pass123!', 'Login123!', 'System123!', 'Network123!'
 ];

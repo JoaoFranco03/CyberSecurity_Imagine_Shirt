@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-
+use App\Rules\NotCommonPassword;
 
 class RegisterController extends Controller
 {
@@ -64,7 +64,10 @@ class RegisterController extends Controller
                 'regex:/[A-Z]/',      // must contain at least one uppercase letter
                 'regex:/[0-9]/',      // must contain at least one digit
                 'regex:/[@$!%*?&#]/', // must contain a special character
+                new NotCommonPassword(), // Note: instantiate the rule here
             ],
+        ], [
+            'password.regex' => 'The password format is invalid.',
         ]);
     }
 
