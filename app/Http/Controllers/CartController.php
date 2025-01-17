@@ -15,7 +15,7 @@ class CartController extends Controller
 {
     protected $priceController;
 
-    public function __construct(priceController $priceController)
+    public function __construct(PriceController $priceController)
     {
         $this->priceController = $priceController;
     }
