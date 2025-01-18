@@ -12,6 +12,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Auth\LoginController; // Add this import
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,15 @@ Route::get('/product', function () {
     return view('product_page.index');
 });
 
+// Move 2FA routes before auth middleware
+Route::get('/2fa/verify', function () {
+    if (!session()->has('2fa:user:id')) {
+        return redirect()->route('login');
+    }
+    return view('auth.2fa.verify');
+})->name('2fa.verify');
+
+Route::post('/2fa/verify', [LoginController::class, 'verify2FA'])->name('2fa.verify.post');
 
 Route::middleware(['auth', 'verified', 'isBlocked'])->group(function () {
 
@@ -89,7 +99,6 @@ Route::middleware(['auth', 'verified', 'isBlocked'])->group(function () {
         Route::resource('dashboard/prices', PriceController::class);
         Route::resource('dashboard', DashboardController::class);
     });
-
 });
 
 Route::put('cart/{id}', [CartController::class, 'update'])->name('cart.update');
@@ -103,4 +112,3 @@ Route::resource('products', ProductController::class);
 Route::resource('orders', OrderController::class)->middleware(['auth', 'verified']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
