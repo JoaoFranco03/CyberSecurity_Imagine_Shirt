@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TwoFactorCode;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -62,16 +63,16 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             Auth::logout(); // Immediately logout after password verification
-            
+
             // Generate random 6-digit code
             $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            
+
             $user->two_factor_code = $code;
             $user->two_factor_expires_at = now()->addMinutes(10);
             $user->save();
-            
+
             Mail::to($user->email)->send(new TwoFactorCode($code));
-            
+
             $request->session()->put('2fa:user:id', $user->id);
             return redirect()->route('2fa.verify');
         }
@@ -91,13 +92,37 @@ class LoginController extends Controller
                 $user->two_factor_code = null;
                 $user->two_factor_expires_at = null;
                 $user->save();
-                
+
                 Auth::login($user);
                 $request->session()->forget('2fa:user:id');
+
+                // Log successful 2FA verification
+                Log::channel('2fa')->info('Successful 2FA verification', [
+                    'user_id' => $user->id,
+                    'email' => $user->email,
+                    'ip' => $request->ip()
+                ]);
+
                 return redirect()->intended(RouteServiceProvider::HOME);
             }
+
+            // Log expired code attempt
+            Log::channel('2fa')->warning('Expired 2FA code used', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'ip' => $request->ip()
+            ]);
+
             return back()->withErrors(['error' => 'Code has expired. Please login again.']);
         }
+
+        // Log invalid code attempt
+        Log::channel('2fa')->warning('Invalid 2FA code attempt', [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'attempted_code' => $request->code,
+            'ip' => $request->ip()
+        ]);
 
         return back()->withErrors(['error' => 'Invalid authentication code']);
     }
