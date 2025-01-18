@@ -128,11 +128,10 @@ return [
         ],
 
         'vpn' => [
-            'driver' => 'daily',
+            'driver' => 'single',
             'path' => storage_path('logs/vpn.log'),
-            'level' => 'debug',
-            'days' => 14,
-            'permission' => 0777
+            'level' => 'info',
+            'formatter' => \App\Logging\CustomFormatter::class,
         ],
     ],
 
