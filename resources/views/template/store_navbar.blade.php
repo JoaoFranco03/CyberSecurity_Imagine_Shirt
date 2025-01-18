@@ -265,7 +265,7 @@
 
             <div class="mt-8 text-center">
               <p class="text-sm text-gray-600 dark:text-gray-400">
-                &copy; 2022. All rights reserved.
+                &copy; 2025. All rights reserved.
               </p>
               
               <button data-popover-target="credits-popover" type="button" 
