@@ -44,7 +44,7 @@ class LoginController extends Controller
                 'email' => $email,
                 'ip' => $ip
             ]);*/
-            $users = $user->id ?? null;
+            $users = $user->id ?? "null";
             Log::channel('login')->warning("Too many attempts {$users}, {$email}, {$ip}");
             return redirect()->back()->withErrors(['error' => 'Too many login attempts. Please try again later.']);
         }
@@ -57,7 +57,7 @@ class LoginController extends Controller
                 'email' => $email,
                 'ip' => $ip
             ]);*/
-            $users = $user->id ?? null;
+            $users = $user->id ?? "null";
             Log::channel('login')->info("User non existant {$users}, {$email}, {$ip}");
             Cache::increment($cacheKey);
             Cache::put($cacheKey, $attempts + 1, now()->addMinutes(15));
