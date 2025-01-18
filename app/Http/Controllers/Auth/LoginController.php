@@ -51,7 +51,7 @@ class LoginController extends Controller
         if ($user == null) {
             //Log::channel('login')->info('Failed login attempt - User does not exist', [
             Log::channel('login')->info('User non existant', [
-                'user_id' => $user->id,
+                'user_id' => $user->id ?? null,
                 'email' => $email,
                 'ip' => $ip
             ]);
