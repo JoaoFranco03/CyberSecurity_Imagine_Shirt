@@ -36,7 +36,7 @@
         </a>
         <div class="w-full max-w-[400px] space-y-8 mx-auto">
             <div>
-                <img class="mx-auto h-10 w-auto" src="{{ asset('img/Logo.png') }}" alt="Logo">
+                <img class="mx-auto h-10 w-auto" src="{{ asset('img/logo.png') }}" alt="Logo">
                 <h2 class="mt-8 text-center text-2xl font-medium text-gray-900">
                     Verify Your Identity
                 </h2>
