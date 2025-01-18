@@ -262,9 +262,62 @@
                 </a>
               </li>
             </ul>
-            <p class="text-xs mt-5 text-gray-500">
-              &copy; 2022. João Franco / Miguel Gameiro / Pedro Vicente. All rights reserved.
-            </p>
+
+            <div class="mt-8 text-center">
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                &copy; 2022. All rights reserved.
+              </p>
+              
+              <button data-popover-target="credits-popover" type="button" 
+                class="mt-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 transition">
+                View Credits
+              </button>
+
+              <div data-popover id="credits-popover" role="tooltip" 
+                class="absolute z-10 invisible inline-block w-72 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                <div class="p-3">
+                  <!-- Header -->
+                  <div class="flex items-center justify-center pb-3 border-b border-gray-200 dark:border-gray-600">
+                    <p class="font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+                      <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      Project Credits
+                    </p>
+                  </div>
+
+                  <!-- Original Project Section -->
+                  <div class="py-2 text-center">
+                    <div class="flex items-center justify-center text-gray-700 dark:text-gray-300 mb-2">
+                      <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                      </svg>
+                      <span class="font-medium">Original Project</span>
+                    </div>
+                    <div class="space-y-1">
+                      <p>João Franco</p>
+                      <p>Miguel Gameiro</p>
+                      <p>Pedro Vicente</p>
+                    </div>
+                  </div>
+
+                  <!-- Cybersecurity Section -->
+                  <div class="py-2 border-t border-gray-200 dark:border-gray-600 text-center">
+                    <div class="flex items-center justify-center text-gray-700 dark:text-gray-300 mb-2">
+                      <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                      </svg>
+                      <span class="font-medium">Cybersecurity Project</span>
+                    </div>
+                    <div class="space-y-1">
+                      <p>Francisco Marques</p>
+                      <p>João Franco</p>
+                      <p>Miguel Susano</p>
+                    </div>
+                  </div>
+                <div data-popper-arrow></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
