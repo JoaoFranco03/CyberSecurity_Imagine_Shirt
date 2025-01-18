@@ -133,6 +133,14 @@ return [
             'level' => 'info',
             'formatter' => \App\Logging\CustomFormatter::class,
         ],
+
+        'login' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/login.log'),
+            'level' => 'debug',
+            'days' => 14,
+            'permission' => 0777
+        ],
     ],
 
 ];
