@@ -73,8 +73,43 @@
                     __('Password') }}</label>
                   <div class="mt-1">
                     <input id="password" name="password" type="password" autocomplete="new-password"
-                      value="{{ old('password') }}" required
+                      value="{{ old('password') }}" required onkeyup="checkPassword(this.value)"
                       class="@error('password') is-invalid @enderror block w-full dark:text-gray-100 appearance-none rounded-md border dark:bg-gray-900 border-gray-300 dark:border-gray-600 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm">
+                  </div>
+                  <div class="mt-2 space-y-1">
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Password must contain:</p>
+                    <ul class="text-xs text-gray-500 dark:text-gray-400 space-y-1 list-inside">
+                      <li class="flex items-center" id="length-check">
+                        <svg class="w-4 h-4 mr-1.5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        At least 8 characters
+                      </li>
+                      <li class="flex items-center" id="lowercase-check">
+                        <svg class="w-4 h-4 mr-1.5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        One lowercase letter
+                      </li>
+                      <li class="flex items-center" id="uppercase-check">
+                        <svg class="w-4 h-4 mr-1.5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        One uppercase letter
+                      </li>
+                      <li class="flex items-center" id="number-check">
+                        <svg class="w-4 h-4 mr-1.5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        One number
+                      </li>
+                      <li class="flex items-center" id="special-check">
+                        <svg class="w-4 h-4 mr-1.5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        One special character
+                      </li>
+                    </ul>
                   </div>
                 </div>
 
@@ -105,5 +140,47 @@
       <img class="absolute inset-0 h-full w-full object-cover" src="/img/store2.jpg" alt="Store">
     </div>
 </body>
+<script>
+function checkPassword(password) {
+  // Check length
+  const lengthCheck = document.querySelector('#length-check svg');
+  if(password.length >= 8) {
+    lengthCheck.classList.replace('text-gray-300', 'text-green-500');
+  } else {
+    lengthCheck.classList.replace('text-green-500', 'text-gray-300');
+  }
 
+  // Check lowercase
+  const lowercaseCheck = document.querySelector('#lowercase-check svg');
+  if(/[a-z]/.test(password)) {
+    lowercaseCheck.classList.replace('text-gray-300', 'text-green-500');
+  } else {
+    lowercaseCheck.classList.replace('text-green-500', 'text-gray-300');
+  }
+
+  // Check uppercase
+  const uppercaseCheck = document.querySelector('#uppercase-check svg');
+  if(/[A-Z]/.test(password)) {
+    uppercaseCheck.classList.replace('text-gray-300', 'text-green-500');
+  } else {
+    uppercaseCheck.classList.replace('text-green-500', 'text-gray-300');
+  }
+
+  // Check numbers
+  const numberCheck = document.querySelector('#number-check svg');
+  if(/[0-9]/.test(password)) {
+    numberCheck.classList.replace('text-gray-300', 'text-green-500');
+  } else {
+    numberCheck.classList.replace('text-green-500', 'text-gray-300');
+  }
+
+  // Check special characters
+  const specialCheck = document.querySelector('#special-check svg');
+  if(/[@$!%*?&#]/.test(password)) {
+    specialCheck.classList.replace('text-gray-300', 'text-green-500');
+  } else {
+    specialCheck.classList.replace('text-green-500', 'text-gray-300');
+  }
+}
+</script>
 </html>
