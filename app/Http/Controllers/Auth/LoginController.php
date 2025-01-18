@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TwoFactorCode;
 
 class LoginController extends Controller
 {
@@ -59,19 +61,44 @@ class LoginController extends Controller
         }
 
         if (Auth::attempt($credentials)) {
-            // Authentication passed
-            //dd($user->user_type == 'A' ? "dashboard" : "home");
-            if ($user->user_type == 'E') {
-                return redirect()->route("orders.index");
-            }
-            $total = session('total', 0);
-            if($total>0){
-                return redirect()->route('cart.checkout');
-            }
-            return $user->user_type == 'A' ? redirect()->route("dashboard.index") : redirect()->route('home');
-        } else {
-            // Authentication failed
-            return redirect()->back()->withErrors(['error' => 'Invalid credentials.']);
+            Auth::logout(); // Immediately logout after password verification
+            
+            // Generate random 6-digit code
+            $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            
+            $user->two_factor_code = $code;
+            $user->two_factor_expires_at = now()->addMinutes(10);
+            $user->save();
+            
+            Mail::to($user->email)->send(new TwoFactorCode($code));
+            
+            $request->session()->put('2fa:user:id', $user->id);
+            return redirect()->route('2fa.verify');
         }
+
+        return redirect()->back()->withErrors(['error' => 'Invalid credentials.']);
+    }
+
+    public function verify2FA(Request $request)
+    {
+        $request->validate(['code' => 'required|string']);
+
+        $userId = $request->session()->get('2fa:user:id');
+        $user = User::findOrFail($userId);
+
+        if ($user->two_factor_code === $request->code) {
+            if ($user->two_factor_expires_at > now()) {
+                $user->two_factor_code = null;
+                $user->two_factor_expires_at = null;
+                $user->save();
+                
+                Auth::login($user);
+                $request->session()->forget('2fa:user:id');
+                return redirect()->intended(RouteServiceProvider::HOME);
+            }
+            return back()->withErrors(['error' => 'Code has expired. Please login again.']);
+        }
+
+        return back()->withErrors(['error' => 'Invalid authentication code']);
     }
 }
