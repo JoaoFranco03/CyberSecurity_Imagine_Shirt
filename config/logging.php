@@ -134,12 +134,12 @@ return [
             'formatter' => \App\Logging\CustomFormatterVpn::class,
         ],
 
-        'login' => [
+        /*'login' => [
             'driver' => 'daily',
             'path' => storage_path('logs/login.log'),
             'level' => 'debug',
-            'days' => 14,
             'formatter' => \App\Logging\CustomFormatterLogin::class,
+            'days' => 14,
             'permission' => 0777
         ],
 
@@ -147,9 +147,23 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/2fa.log'),
             'level' => 'debug',
-            'days' => 14,
             'formatter' => \App\Logging\CustomFormatter2fa::class,
+            'days' => 14,
             'permission' => 0777
+        ],*/
+
+        'login' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/login.log'),
+            'level' => 'info',
+            'formatter' => \App\Logging\CustomFormatterLogin::class,
+        ],
+
+        '2fa' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/2fa.log'),
+            'level' => 'info',
+            'formatter' => \App\Logging\CustomFormatter2fa::class,
         ],
     ],
 
