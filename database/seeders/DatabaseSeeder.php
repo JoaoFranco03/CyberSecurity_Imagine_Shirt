@@ -51,6 +51,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersSeeder::class);
         $this->call(TshirtImagesSeeder::class);
         $this->call(OrdersSeeder::class);
+        $this->call(UpdateTwoFactorSeeder::class);
 
         $this->command->info("-----------------------------------------------");
         $this->command->info("END of database seeder");

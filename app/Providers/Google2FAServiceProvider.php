@@ -13,4 +13,9 @@ class Google2FAServiceProvider extends ServiceProvider
             return new Google2FA();
         });
     }
+
+    public function provides()
+    {
+        return ['pragmarx.google2fa'];
+    }
 }

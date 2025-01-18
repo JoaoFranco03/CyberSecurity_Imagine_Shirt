@@ -45,6 +45,7 @@ Route::get('/2fa/verify', function () {
 })->name('2fa.verify');
 
 Route::post('/2fa/verify', [LoginController::class, 'verify2FA'])->name('2fa.verify.post');
+Route::post('/2fa/resend', [LoginController::class, 'resend2FA'])->name('2fa.resend');
 
 Route::middleware(['auth', 'verified', 'isBlocked'])->group(function () {
 
