@@ -131,7 +131,7 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/vpn.log'),
             'level' => 'info',
-            'formatter' => \App\Logging\CustomFormatter::class,
+            'formatter' => \App\Logging\CustomFormatterVpn::class,
         ],
 
         'login' => [
@@ -139,6 +139,7 @@ return [
             'path' => storage_path('logs/login.log'),
             'level' => 'debug',
             'days' => 14,
+            'formatter' => \App\Logging\CustomFormatterLogin::class,
             'permission' => 0777
         ],
 
@@ -147,6 +148,7 @@ return [
             'path' => storage_path('logs/2fa.log'),
             'level' => 'debug',
             'days' => 14,
+            'formatter' => \App\Logging\CustomFormatter2fa::class,
             'permission' => 0777
         ],
     ],

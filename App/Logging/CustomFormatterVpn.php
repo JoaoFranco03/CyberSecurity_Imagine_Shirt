@@ -4,7 +4,7 @@ namespace App\Logging;
 
 use Monolog\Formatter\LineFormatter;
 
-class CustomFormatter extends LineFormatter
+class CustomFormatterVpn extends LineFormatter
 {
     public function __construct()
     {

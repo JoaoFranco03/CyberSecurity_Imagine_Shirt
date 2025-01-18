@@ -33,20 +33,25 @@ class LoginController extends Controller
         $cacheKey = 'login_attempts_' . $email . '_' . $ip;
         $attempts = Cache::get($cacheKey, 0);
 
+
+        // Retrieve the user record
+        $user = User::where('email', $email)->first();
         // Check rate limiting
         if ($attempts >= 5) {
-            Log::channel('login')->warning('Too many login attempts', [
+            //Log::channel('login')->warning('Too many login attempts', [
+            Log::channel('login')->warning('Too many attempts', [
+                'user_id' => $user->id,
                 'email' => $email,
                 'ip' => $ip
             ]);
             return redirect()->back()->withErrors(['error' => 'Too many login attempts. Please try again later.']);
         }
 
-        // Retrieve the user record
-        $user = User::where('email', $email)->first();
 
         if ($user == null) {
-            Log::channel('login')->info('Failed login attempt - User does not exist', [
+            //Log::channel('login')->info('Failed login attempt - User does not exist', [
+            Log::channel('login')->info('User non existant', [
+                'user_id' => $user->id,
                 'email' => $email,
                 'ip' => $ip
             ]);
@@ -57,7 +62,8 @@ class LoginController extends Controller
 
         // Check if user is blocked
         if ($user->blocked != 0) {
-            Log::channel('login')->warning('Blocked user attempted to login', [
+            //Log::channel('login')->warning('Blocked user attempted to login', [
+            Log::channel('login')->warning('Blocked user attempted', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'ip' => $ip
@@ -80,7 +86,8 @@ class LoginController extends Controller
             // Clear failed login attempts after successful password verification
             Cache::forget($cacheKey);
 
-            Log::channel('login')->info('Password verified, 2FA code sent', [
+            //Log::channel('login')->info('Password verified, 2FA code sent', [
+            Log::channel('login')->info('2FA code sent', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'ip' => $ip
@@ -91,7 +98,8 @@ class LoginController extends Controller
         }
 
         // Failed login attempt
-        Log::channel('login')->warning('Failed login attempt - Invalid credentials', [
+        //Log::channel('login')->warning('Failed login attempt - Invalid credentials', [
+        Log::channel('login')->warning('Failed Invalid credentials', [
             'user_id' => $user->id,
             'email' => $user->email,
             'ip' => $ip
@@ -114,8 +122,10 @@ class LoginController extends Controller
         $verifyAttempts = Cache::get($verifyAttemptKey, 0);
 
         if ($verifyAttempts >= 5) {
-            Log::channel('2fa')->warning('Too many verification attempts', [
+            //Log::channel('2fa')->warning('Too many verification attempts', [
+            Log::channel('2fa')->warning('Exceeded verification attempts', [
                 'user_id' => $user->id,
+                'email' => $user->email,
                 'ip' => $ip
             ]);
             return back()->withErrors(['error' => 'Too many attempts. Please try again later.']);
@@ -131,6 +141,7 @@ class LoginController extends Controller
                 $request->session()->forget('2fa:user:id');
 
                 // Log successful 2FA verification
+                //Log::channel('2fa')->info('Successful 2FA verification', [
                 Log::channel('2fa')->info('Successful 2FA verification', [
                     'user_id' => $user->id,
                     'email' => $user->email,
@@ -151,7 +162,8 @@ class LoginController extends Controller
             }
 
             // Log expired code attempt
-            Log::channel('2fa')->warning('Expired 2FA code used', [
+            //Log::channel('2fa')->warning('Expired 2FA code used', [
+            Log::channel('2fa')->warning('Expired 2FA code', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'ip' => $request->ip()
@@ -161,10 +173,11 @@ class LoginController extends Controller
         }
 
         // Log invalid code attempt
-        Log::channel('2fa')->warning('Invalid 2FA code attempt', [
+        //Log::channel('2fa')->warning('Invalid 2FA code attempt', [
+        Log::channel('2fa')->warning('Invalid 2FA code', [
             'user_id' => $user->id,
             'email' => $user->email,
-            'attempted_code' => $request->code,
+            //'attempted_code' => $request->code,
             'ip' => $request->ip()
         ]);
 
@@ -188,8 +201,10 @@ class LoginController extends Controller
         $resendKey = 'resend_cooldown_' . $userId . '_' . $ip;
         if (Cache::has($resendKey)) {
             $remainingTime = Cache::ttl($resendKey);
-            Log::channel('2fa')->warning('Resend attempt during cooldown', [
+            //Log::channel('2fa')->warning('Resend attempt during cooldown', [
+            Log::channel('2fa')->warning('Attempted during cooldown', [
                 'user_id' => $user->id,
+                'email' => $user->email,
                 'ip' => $ip
             ]);
             return response()->json([
@@ -210,6 +225,7 @@ class LoginController extends Controller
 
         Log::channel('2fa')->info('2FA code resent', [
             'user_id' => $user->id,
+            'email' => $user->email,
             'ip' => $ip
         ]);
 
