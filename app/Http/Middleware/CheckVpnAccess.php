@@ -14,21 +14,6 @@ class CheckVpnAccess
         $clientIp = $this->getRealIp($request);
         $allowedIps = ['2.80.250.76', '188.83.23.108']; // Your VPN IP range and specific IP
 
-        // Log the actual IP and headers for debugging
-        Log::channel('vpn')->info("VPN access check initiated", [
-            'ip' => $clientIp,
-            'remote_addr' => $_SERVER['REMOTE_ADDR'] ?? 'not set',
-            'x_forwarded_for' => $request->header('X-Forwarded-For'),
-            'server_vars' => array_intersect_key($_SERVER, array_flip([
-                'REMOTE_ADDR',
-                'HTTP_X_FORWARDED_FOR',
-                'HTTP_X_FORWARDED',
-                'HTTP_FORWARDED_FOR',
-                'HTTP_FORWARDED'
-            ])),
-            'path' => $request->path()
-        ]);
-
         try {
             $allowed = false;
             foreach ($allowedIps as $allowedIp) {
@@ -39,21 +24,15 @@ class CheckVpnAccess
             }
 
             if (!$allowed) {
-                Log::channel('vpn')->warning("VPN access denied", [
-                    'ip' => $clientIp,
-                    'path' => $request->path()
-                ]);
-                abort(403, 'Access denied. VPN connection required.');
+                Log::channel('vpn')->info("Access denied from ip: {$clientIp}");
+                return response('Access denied', 403);
             }
-
-            return $next($request);
         } catch (\Exception $e) {
-            Log::channel('vpn')->error("VPN check error", [
-                'ip' => $clientIp,
-                'error' => $e->getMessage()
-            ]);
-            throw $e;
+            Log::channel('vpn')->error("Error checking VPN access: " . $e->getMessage());
+            return response('Internal Server Error', 500);
         }
+
+        return $next($request);
     }
 
     private function getRealIp(Request $request)
