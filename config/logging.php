@@ -165,6 +165,13 @@ return [
             'level' => 'info',
             'formatter' => \App\Logging\CustomFormatter2fa::class,
         ],
+
+        'sql_injection' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/sql_injection.log'),
+            'level' => 'info',
+            'formatter' => \App\Logging\CustomFormatterSqlInjection::class,
+        ],
     ],
 
 ];

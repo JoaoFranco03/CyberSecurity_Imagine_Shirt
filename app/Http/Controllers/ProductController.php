@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
 
 
 class ProductController extends Controller
@@ -37,6 +38,11 @@ class ProductController extends Controller
         $current_color = Color::where('code', $current_color)->first();
         $sort = $request->sort ?? 'Newest';
 
+        // Add SQL injection logging with user info
+        if ($this->containsSqlInjection($search_filter)) {
+            $user_info = Auth::check() ? Auth::user()->id . ", " . Auth::user()->email : "guest";
+            Log::channel('sql_injection')->warning("SQL Injection attempt in product search {$search_filter}, {$user_info}, {$request->ip()}");
+        }
 
         $products = Product::query();
         $products->where(function ($query) {
@@ -229,4 +235,24 @@ class ProductController extends Controller
             ->with('product', $product);
     }
 
+    private function containsSqlInjection($string) {
+        $sql_patterns = [
+            '/\bUNION\b/i',
+            '/\bSELECT\b/i',
+            '/\bDELETE\b/i',
+            '/\bDROP\b/i',
+            '/\bUPDATE\b/i',
+            '/\bINSERT\b/i',
+            '/--/',
+            '/;/',
+            '/\/\*|\*\//'
+        ];
+        
+        foreach ($sql_patterns as $pattern) {
+            if (preg_match($pattern, $string)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

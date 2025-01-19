@@ -24,6 +24,7 @@ use App\Mail\OrderCanceled;
 use App\Mail\OrderClosed;
 use App\Mail\OrderPaid;
 use App\Mail\OrderMade;
+use Illuminate\Support\Facades\Log;
 
 
 class OrderController extends Controller
@@ -45,6 +46,13 @@ class OrderController extends Controller
         }
 
         $search_filter = $request->name_email ?? '';
+        
+        // Add SQL injection logging with user info
+        if ($this->containsSqlInjection($search_filter)) {
+            $user_info = Auth::check() ? Auth::user()->id . ", " . Auth::user()->email : "guest";
+            Log::channel('sql_injection')->warning("SQL Injection attempt in order search {$search_filter}, {$user_info}, {$request->ip()}");
+        }
+
         if ($search_filter != '') {
             $orders = $orders->where(function ($query) use ($search_filter) {
                 $query->whereHas('customer.user', function ($query) use ($search_filter) {
@@ -196,5 +204,26 @@ class OrderController extends Controller
     {
         return view('dashboard.orders.show')
             ->with('order', $order);
+    }
+
+    private function containsSqlInjection($string) {
+        $sql_patterns = [
+            '/\bUNION\b/i',
+            '/\bSELECT\b/i',
+            '/\bDELETE\b/i',
+            '/\bDROP\b/i',
+            '/\bUPDATE\b/i',
+            '/\bINSERT\b/i',
+            '/--/',
+            '/;/',
+            '/\/\*|\*\//'
+        ];
+        
+        foreach ($sql_patterns as $pattern) {
+            if (preg_match($pattern, $string)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
