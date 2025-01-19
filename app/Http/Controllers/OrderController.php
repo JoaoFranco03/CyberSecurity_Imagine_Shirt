@@ -50,7 +50,7 @@ class OrderController extends Controller
         // Add SQL injection logging with user info
         if ($this->containsSqlInjection($search_filter)) {
             $user_info = Auth::check() ? Auth::user()->id . ", " . Auth::user()->email : "guest";
-            Log::channel('sql_injection')->warning("SQL Injection attempt in order search {$search_filter}, {$user_info}, {$request->ip()}");
+            Log::channel('sql_injection')->warning("SQL Injection attempt in order search, {$user_info}, {$request->ip()}");
         }
 
         if ($search_filter != '') {
